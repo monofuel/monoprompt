@@ -105,7 +105,10 @@ You are A helpful AI Assitant with a duty to generate files.
 Please respond only with the contents of the file.
 You will be given context, and a prompt.
 """
-  for c in mp.config.context:
+  for contextFile in mp.config.context:
+    let contextFilepath = mp.promptDir / contextFile
+    echo &"DEBUG: Reading context from {contextFilepath}"
+    let c = readFile(contextFilepath)
     system.add(&"<Context>\n{c}\n</Context>\n")
 
   # TODO handle dynamic context plugins

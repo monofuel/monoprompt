@@ -1,0 +1,15 @@
+# call_fibonacci.nim
+
+## config
+
+model: gpt-3.5-turbo
+context:
+  - ./fibonacci.nim
+
+## prompt
+
+Please generate a nim test file for the fibonacci function in the context.
+Use std/[unittest]
+Do not use `when isMainModule`. unittest runs the tests automatically.
+
+Please also import the file with `import ./fibonacci`
