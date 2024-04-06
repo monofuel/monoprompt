@@ -5,7 +5,6 @@
 - Inspired by Dockerfiles, monoprompts are a way to orchestrate LLMs to generate text files.
 - A monoprompt contains the name of the file(s) to output, the LLM model to use, supporting context files, and the prompt.
 - monoprompts might output code, documentation, or any other text file.
-- monoprompts may depend on the output of other monoprompts.
 
 - example use cases:
 
