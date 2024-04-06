@@ -1,6 +1,10 @@
 import std/[os, strutils, sequtils, strformat, json],
   jsony, yaml/[loading], ./ai
 
+var
+  check = false
+
+const ExamplePromptfile = staticRead("../tests/monoprompts/life.monoprompt")
 
 type MonopromptOutput* = enum
   overwrite,
@@ -26,14 +30,13 @@ proc printHelp() =
   echo "Usage: monoprompt <promptfile>"
   echo ""
   echo "--check \t\tvalidate loading in the monoprompt files"
-  echo &"--create <filename> \t\tcreate a new monoprompt file with a basic template"
-  #echo "--dryrun \t\tdo a dry run without running the LLM or producing output"
-  # echo ""
+  echo "--create <filename> \t\tcreate a new monoprompt file with a basic template"
+  echo ""
   echo "  --version  \t\tprint version"
   echo "  --help     \t\tprint this help"
 
 proc printVersion() =
-  echo "Monoprompt version 0.1.1"
+  echo "Monoprompt version 1.0.0"
 
 proc parseMonoprompt*(filename: string): seq[Monoprompt] =
   let promptContent = readFile(filename)
@@ -90,15 +93,37 @@ proc parseMonoprompt*(filename: string): seq[Monoprompt] =
     echo "No monoprompt prompts found"
 
 
-proc executeMonoprompt(monoprompt: Monoprompt) =
-  echo &"Processing {monoprompt.filename}"
+proc executeMonoprompt(mp: Monoprompt) =
+  echo &"Processing {mp.filename}"
 
+  echo &"Processing output {mp.filename}"
+  if mp.config.output != overwrite:
+    raise newException(Exception, "Output mode not yet implemented")
 
+  var system = &"""
+You are A helpful AI Assitant with a duty to generate files.
+Please respond only with the contents of the file.
+You will be given context, and a prompt.
+"""
+  for c in mp.config.context:
+    system.add(&"<Context>\n{c}\n</Context>\n")
+
+  # TODO handle dynamic context plugins
+  # TODO handle depends
+
+  if check:
+    return
+  let fileOutput = generateCompletion(
+    mp.config.model,
+    system.strip,
+    mp.prompt.strip
+  )
+  let outputFilepath = mp.promptDir / mp.filename
+  echo &"Writing to {outputFilepath}"
+  writeFile(outputFilepath, fileOutput)
 
 proc main() =
-  var
-    args = commandLineParams()
-    check = false
+  var args = commandLineParams()
 
   if args.len == 0 or args[0] == "--help" or args[0] == "-h":
     printHelp()
@@ -110,7 +135,18 @@ proc main() =
   if args[0] == "--check" or args[0] == "-c":
     check = true
     args = args[1..^1]
+  if args[0] == "--create":
+    if args.len < 2:
+      echo "Error: --create requires a filename"
+      return
+    var filename = args[1]
+    if not filename.endsWith(".monoprompt"):
+      filename = filename & ".monoprompt"
+    var sampleOutput = ExamplePromptfile
+    sampleOutput = sampleOutput.replace("life.txt", filename)
 
+    writeFile(filename, sampleOutput)
+    return
 
   ai.setup()
 
@@ -128,31 +164,7 @@ proc main() =
   echo "DEBUG: monoprompts ", toJson(monoprompts)
 
   for mp in monoprompts:
-    echo &"Processing output {mp.filename}"
-    if mp.config.output != overwrite:
-      raise newException(Exception, "Output mode not yet implemented")
-
-    var system = &"""
-  You are A helpful AI Assitant with a duty to generate files.
-  Please respond only with the contents of the file.
-  You will be given context, and a prompt.
-  """
-    for c in mp.config.context:
-      system.add(&"<Context>\n{c}\n</Context>\n")
-
-    # TODO handle dynamic context plugins
-    # TODO handle depends
-
-    if check:
-      continue
-    let fileOutput = generateCompletion(
-      mp.config.model,
-      system.strip,
-      mp.prompt.strip
-    )
-    let outputFilepath = mp.promptDir / mp.filename
-    echo &"Writing to {outputFilepath}"
-    writeFile(outputFilepath, fileOutput)
+    executeMonoprompt(mp)
 
   ai.close()
 

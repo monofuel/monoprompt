@@ -1,7 +1,5 @@
 # monoprompt
 
-- WIP
-
 - A LLM project that aims to allow for fine-grain control of using LLMs to generate individual files.
 
 - Inspired by Dockerfiles, monoprompts are a way to orchestrate LLMs to generate text files.
@@ -24,8 +22,9 @@
 
 ## Specification
 
-- yaml? md?
-- I'm sick of yaml. I want to use markdown.
+- You can create a monoprompt by running `./monoprompt --create example.txt`
+  - this command will create `example.txt.monoprompt` in the current directory.
+- You can run a monoprompt by running `./monoprompt example.txt.monoprompt`
 
 - start the file with a header of the output filename.
 - a monoprompt file can contain multiple headers, to generate multiple files.
@@ -70,19 +69,27 @@ At the end of the file, include a `when isMainModule:` block with tests for how 
 
 ## Fine-Tuning
 
+- TODO not implemented yet
+
 - projects with both monoprompts and their document output can be further fine-tuned, as we have both instructions and the output to train on.
 - This can be very useful to incrementally train models on existing codebases by introducing monoprompts to instruct the model with.
 
 ## Plugin system
 
+- TODO not implemented yet
+
 - monoprompts can be extended with plugins that hook into different stages of the monoprompt generation process.
 
 ### Post-Processor
+
+- TODO not implemented yet
 
 - post-processors can be used to modify the output of a monoprompt.
 - for example, we could try to run a compiler on the output and then run the compiler errors through another LLM to automatically correct them.
 
 ### Dynamic Context
+
+- TODO not implemented yet
 
 - dynamic context via executable plugins
 - a plugin is a binary or script that can take in a json object, and return a json object response with an array of context objects
