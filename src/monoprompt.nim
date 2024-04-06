@@ -1,4 +1,4 @@
-import std/[os, strutils, re, sequtils, strformat, json],
+import std/[os, strutils, strformat, json],
   jsony, yaml/[loading], ./ai
 
 var
@@ -36,7 +36,7 @@ proc printHelp() =
   echo "  --help     \t\tprint this help"
 
 proc printVersion() =
-  echo "Monoprompt version 1.0.0"
+  echo "Monoprompt version 1.0.1"
 
 proc parseMonoprompt*(filename: string): seq[Monoprompt] =
   let promptContent = readFile(filename)
@@ -119,6 +119,7 @@ You will be given context, and a prompt.
     mp.prompt.strip
   )
   # LLMs sometimes really like using codeblocks, let's just strip them out
+
   var lines = fileOutput.split("\n")
   # Remove the first line if it starts with ```
   if lines.len > 0 and lines[0].startsWith("```"):
