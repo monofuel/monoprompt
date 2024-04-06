@@ -4,6 +4,6 @@
 
 model: gpt-3.5-turbo
 
-## Input
+## prompt
 
 What is the answer to the life, the universe, and everything?

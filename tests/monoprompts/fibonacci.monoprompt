@@ -4,7 +4,7 @@
 
 model: gpt-3.5-turbo
 
-## Input
+## prompt
 
 Please generate a Nim file with a single nim function to calculate fibonacci numbers recursively.
 

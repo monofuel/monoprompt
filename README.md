@@ -29,8 +29,8 @@
 
 - start the file with a header of the output filename.
 - a monoprompt file can contain multiple headers, to generate multiple files.
-- each file may have an optional `## config` section, which will contain a YAML config object (ew)
-- each file will have an `## Input` section, which will contain the prompt for the LLM.
+- each file may have an optional `## Config` section, which will contain a YAML config object (ew)
+- each file will have an `## Prompt` section, which will contain the prompt for the LLM.
 - There may be a project top level `monoprompt.yaml` file of cross project configuration.
 
   - this config object will be merged with the config object in each file.
@@ -55,7 +55,7 @@ context:
   - ./otherfile.nim
 model: gemini-1.0-pro-001
 
-## Input
+## prompt
 
 Please generate a Nim file with a single nim function to calculate fibonacci numbers recursively.
 
