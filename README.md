@@ -67,7 +67,7 @@ At the end of the file, include a `when isMainModule:` block with tests for how 
 ## Fine-Tuning
 
 - projects with both monoprompts and their document output can be further fine-tuned, as we have both instructions and the output to train on.
-- This can be very useful to incrementally train models on existing codebases.
+- This can be very useful to incrementally train models on existing codebases by introducing monoprompts to instruct the model with.
 
 ## Plugin system
 
