@@ -12,8 +12,9 @@ proc setup*() =
   ollama = newOllamaAPI()
 
 proc close*() =
+  if openai != nil:
+    openai.close()
   ollama.close()
-  openai.close()
 
 proc generateCompletion*(model: string, system: string,
     prompt: string): string =
