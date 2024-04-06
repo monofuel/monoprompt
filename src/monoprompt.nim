@@ -1,4 +1,5 @@
-import std/[os, strutils, strformat, json], jsony, yaml/[loading]
+import std/[os, strutils, sequtils, strformat, json],
+  jsony, yaml/[loading], ./ai
 
 
 type MonopromptOutput* = enum
@@ -14,6 +15,7 @@ type MonopromptConfig* = ref object
 
 type Monoprompt* = ref object
   promptFilename*: string
+  promptDir*: string
   filename*: string
   config*: MonopromptConfig
   prompt*: string
@@ -23,7 +25,8 @@ proc printHelp() =
 
   echo "Usage: monoprompt <promptfile>"
   echo ""
-  #echo "--check \t\tvalidate loading in the monoprompt files"
+  echo "--check \t\tvalidate loading in the monoprompt files"
+  echo &"--create <filename> \t\tcreate a new monoprompt file with a basic template"
   #echo "--dryrun \t\tdo a dry run without running the LLM or producing output"
   # echo ""
   echo "  --version  \t\tprint version"
@@ -35,6 +38,9 @@ proc printVersion() =
 proc parseMonoprompt*(filename: string): seq[Monoprompt] =
   let promptContent = readFile(filename)
   let lines = promptContent.splitLines
+  let (head, tail) = splitPath(filename)
+  echo "DEBUG: head ", head
+  echo "DEBUG: tail ", tail
   var
     currentFile = Monoprompt()
     currentSection = ""
@@ -47,6 +53,8 @@ proc parseMonoprompt*(filename: string): seq[Monoprompt] =
         if config != "":
           load(config, currentFile.config)
           config = ""
+        currentFile.promptFilename = filename
+        currentFile.promptDir = head
         result.add(currentFile)
         currentFile = Monoprompt()
       else:
@@ -71,6 +79,8 @@ proc parseMonoprompt*(filename: string): seq[Monoprompt] =
     if config != "":
       load(config, currentFile.config)
       config = ""
+    currentFile.promptFilename = filename
+    currentFile.promptDir = head
     result.add(currentFile)
 
   for p in result:
@@ -80,8 +90,16 @@ proc parseMonoprompt*(filename: string): seq[Monoprompt] =
     echo "No monoprompt prompts found"
 
 
+proc executeMonoprompt(monoprompt: Monoprompt) =
+  echo &"Processing {monoprompt.filename}"
+
+
+
 proc main() =
-  let args = commandLineParams()
+  var
+    args = commandLineParams()
+    check = false
+
   if args.len == 0 or args[0] == "--help" or args[0] == "-h":
     printHelp()
     return
@@ -89,17 +107,59 @@ proc main() =
     printVersion()
     return
 
-  echo "DEBUG: args ", toJson(args)
+  if args[0] == "--check" or args[0] == "-c":
+    check = true
+    args = args[1..^1]
+
+
+  ai.setup()
+
+  echo "DEBUG: promptfiles ", toJson(args)
+  echo &"DEBUG: check: {check}"
 
   let filepath = args[0]
 
-  let (head, tail) = splitPath(filepath)
-  echo "DEBUG: head ", head
-  echo "DEBUG: tail ", tail
+  # TODO handle multiple files
+  # TODO handle wildcards
 
+  echo &"Parsing {filepath}"
   let monoprompts = parseMonoprompt(filepath)
   echo "DEBUG: monoprompts.len ", monoprompts.len
   echo "DEBUG: monoprompts ", toJson(monoprompts)
+
+  for mp in monoprompts:
+    echo &"Processing output {mp.filename}"
+    if mp.config.output != overwrite:
+      raise newException(Exception, "Output mode not yet implemented")
+
+    var system = &"""
+  You are A helpful AI Assitant with a duty to generate files.
+  Please respond only with the contents of the file.
+  You will be given context, and a prompt.
+  """
+    for c in mp.config.context:
+      system.add(&"<Context>\n{c}\n</Context>\n")
+
+    # TODO handle dynamic context plugins
+    # TODO handle depends
+
+    if check:
+      continue
+    let fileOutput = generateCompletion(
+      mp.config.model,
+      system.strip,
+      mp.prompt.strip
+    )
+    let outputFilepath = mp.promptDir / mp.filename
+    echo &"Writing to {outputFilepath}"
+    writeFile(outputFilepath, fileOutput)
+
+  ai.close()
+
+  if check:
+    echo "Check complete, no errors found"
+  else:
+    echo &"Monoprompt {filepath} complete"
 
 
 when isMainModule:

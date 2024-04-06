@@ -64,6 +64,10 @@ Please generate a Nim file with a single nim function to calculate fibonacci num
 At the end of the file, include a `when isMainModule:` block with tests for how to run the function.
 ```
 
+## Environment
+
+- set `OPENAI_API_KEY` to your OpenAI API key if you want to use the OpenAI API.
+
 ## Fine-Tuning
 
 - projects with both monoprompts and their document output can be further fine-tuned, as we have both instructions and the output to train on.
