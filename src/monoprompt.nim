@@ -1,4 +1,4 @@
-import std/[os, strutils, sequtils, strformat, json],
+import std/[os, strutils, re, sequtils, strformat, json],
   jsony, yaml/[loading], ./ai
 
 var
@@ -93,7 +93,7 @@ proc parseMonoprompt*(filename: string): seq[Monoprompt] =
     echo "No monoprompt prompts found"
 
 
-proc executeMonoprompt(mp: Monoprompt) =
+proc execute*(mp: Monoprompt) =
   echo &"Processing {mp.filename}"
 
   echo &"Processing output {mp.filename}"
@@ -113,11 +113,21 @@ You will be given context, and a prompt.
 
   if check:
     return
-  let fileOutput = generateCompletion(
+  var fileOutput = generateCompletion(
     mp.config.model,
     system.strip,
     mp.prompt.strip
   )
+  # LLMs sometimes really like using codeblocks, let's just strip them out
+  var lines = fileOutput.split("\n")
+  # Remove the first line if it starts with ```
+  if lines.len > 0 and lines[0].startsWith("```"):
+    lines = lines[1..^1]
+  # Remove the last line if it is ```
+  if lines.len > 0 and lines[^1] == "```":
+    lines = lines[0..^2]
+  fileOutput = lines.join("\n")
+
   let outputFilepath = mp.promptDir / mp.filename
   echo &"Writing to {outputFilepath}"
   writeFile(outputFilepath, fileOutput)
@@ -164,7 +174,7 @@ proc main() =
   echo "DEBUG: monoprompts ", toJson(monoprompts)
 
   for mp in monoprompts:
-    executeMonoprompt(mp)
+    execute(mp)
 
   ai.close()
 
