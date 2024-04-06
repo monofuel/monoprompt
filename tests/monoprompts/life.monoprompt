@@ -1,0 +1,9 @@
+# life.txt
+
+## config
+
+model: gpt-3.5-turbo
+
+## Input
+
+What is the answer to the life, the universe, and everything?

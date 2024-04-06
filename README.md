@@ -42,7 +42,7 @@
   - depends: list of promptfiles that this prompt depends on
   - output: "overwrite", "augment" or "append"
     - overwrite: overwrite the file
-    - augment: add to the file
+    - augment: include the existing file as context and re-write the file with augmentations
     - append: add to the file, but only if the file doesn't already exist
 
 ```monoprompt

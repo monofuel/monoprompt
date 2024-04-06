@@ -1,0 +1,15 @@
+# fibonacci.nim
+
+## config
+
+model: gpt-3.5-turbo
+
+## Input
+
+Please generate a Nim file with a single nim function to calculate fibonacci numbers recursively.
+
+```
+proc fib*(n: int): int =
+```
+
+At the end of the file, include a `when isMainModule:` block with tests for how to run the function.
