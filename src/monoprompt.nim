@@ -36,7 +36,7 @@ proc printHelp() =
   echo "  --help     \t\tprint this help"
 
 proc printVersion() =
-  echo "Monoprompt version 1.0.1"
+  echo "Monoprompt version 1.0.2"
 
 proc parseMonoprompt*(filename: string): seq[Monoprompt] =
   let promptContent = readFile(filename)
