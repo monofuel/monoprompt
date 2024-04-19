@@ -1,0 +1,29 @@
+# utils.nim
+
+## config
+
+model: gpt-4-turbo
+context: []
+depends: []
+output: overwrite
+
+## prompt
+
+Please generate a nim file with the following function:
+
+```
+import std/[os,strformat]
+
+proc recurseList*(filePath: string): seq[string] =
+  ## Recursively list all files in a directory.
+  ## returns a list of relative file paths
+  echo &"DEBUG: {filepath}"
+  for kind, path in walkDir(filePath):
+    if {pcFile, pcLinkToFile}.contains(kind):
+      result.add(path)
+    elif {pcDir, pcLinkToDir}.contains(kind):
+      result.add(recurseList(path))
+```
+
+nim has an implicit `result` variable for all functions you can use that is automatically returned.
+Please skip hidden files that start with a `.`

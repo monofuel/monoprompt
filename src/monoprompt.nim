@@ -1,5 +1,5 @@
 import std/[os, strutils, strformat, json],
-  jsony, yaml/[loading], ./ai
+  jsony, yaml/[loading], ./ai, utils
 
 var
   check = false
@@ -115,11 +115,14 @@ proc execute*(mp: Monoprompt) =
   ## Execute a parsed monoprompt.
   ## iterates over all the outputs in the monoprompt and
   ## executes them with the specified LLM in the config.
-  echo &"Processing {mp.filename}"
+  echo &"DEBUG: Processing {mp.filename}"
 
   if c.depends.len > 0:
     # iterate through dependencies and see if they have been executed yet
     for dep in c.depends:
+      if dep.contains("*"):
+        # TODO implement wildcards for dependencies
+        raise newException(Exception, &"Wildcards not yet implemented")
       let depFilepath = mp.promptDir / dep
       let depInfo = getFileInfo(depFilepath)
       if depInfo.kind != pcFile:
@@ -151,7 +154,27 @@ Please respond only with the contents of the file.
 You will be given context, and a prompt.
 """
   for contextFile in c.context:
+
+    if contextFile.endsWith"/...":
+      echo &"DEBUG: Reading all files in directory {mp.promptDir}"
+      var files: seq[string]
+      # list all files recursively
+      var recurseFilepath = contextFile
+      recurseFilepath.removeSuffix("/...")
+      recurseFilepath = mp.promptDir / recurseFilepath
+
+      let files = recurseList(recurseFilepath)
+
+
+
+      continue
+
+
     let contextFilepath = mp.promptDir / contextFile
+
+    if contextFilepath.contains("*"):
+      # TODO handle wildcards for context
+      raise newException(Exception, &"Wildcards not yet implemented")
 
     # check if it is a file or directory
     let ctxInfo = getFileInfo(contextFilepath)
@@ -241,7 +264,7 @@ proc main() =
   # TODO handle wildcards
   # TODO should re-order the files based on dependencies
 
-  echo &"Parsing {filepath}"
+  echo &"DEBUG: Parsing {filepath}"
   let monoprompts = readMonoprompt(filepath)
   echo "DEBUG: monoprompts.len ", monoprompts.len
   echo "DEBUG: monoprompts ", toJson(monoprompts)
