@@ -67,7 +67,7 @@ context:
   - ./readme.md
   - ./programming-patterns.md
   - ./otherfile.nim
-model: gemini-1.0-pro-001
+model: gpt-3.5-turbo
 
 ## prompt
 
