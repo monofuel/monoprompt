@@ -93,3 +93,11 @@ At the end of the file, include a `when isMainModule:` block with tests for how 
 - dynamic context via executable plugins
 - a plugin is a binary or script that can take in a json object, and return a json object response with an array of context objects
 - This way monoprompts can interact with arbitrary RAG or search systems
+
+
+# Testing
+
+- run `nimble test` to run unit tests
+- run `nim c -r tests/integration.nim` to run integration tests
+  - OPENAI_API_KEY must be set to run integration tests
+  - if you are adventurous, modify the test prompts for ollama to run locally.
