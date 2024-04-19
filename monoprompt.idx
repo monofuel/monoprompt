@@ -1,0 +1,9 @@
+nimTitle	monoprompt	monoprompt.html	module src/monoprompt		0
+nim	overwrite	monoprompt.html#overwrite	MonopromptOutput.overwrite		9
+nim	augment	monoprompt.html#augment	MonopromptOutput.augment		9
+nim	append	monoprompt.html#append	MonopromptOutput.append		9
+nim	MonopromptOutput	monoprompt.html#MonopromptOutput	enum MonopromptOutput		9
+nim	MonopromptConfig	monoprompt.html#MonopromptConfig	type MonopromptConfig		14
+nim	Monoprompt	monoprompt.html#Monoprompt	type Monoprompt		20
+nim	parseMonoprompt	monoprompt.html#parseMonoprompt,string	proc parseMonoprompt(filename: string): seq[Monoprompt]		41
+nim	execute	monoprompt.html#execute,Monoprompt	proc execute(mp: Monoprompt)		96
