@@ -161,7 +161,7 @@ Please respond only with the contents of the file.
 You will be given context, and a prompt.
 """
   if c.output == augment:
-    system &= "You will be augmenting a file that already exists. It will be provided as <ExistingFile/>."
+    system &= "You will be augmenting a file that already exists."
 
   for contextFile in c.context:
 
@@ -216,7 +216,7 @@ You will be given context, and a prompt.
       raise newException(Exception, &"Augment mode requires an existing file {outputFilepath}")
 
     let existingFile = readFile(outputFilepath)
-    system.add(&"<ExistingFile>\n{existingFile}\n</ExistingFile>\n")
+    system.add(&"# Existing File\n{existingFile}\n")
 
   case c.output:
   of overwrite,augment:
