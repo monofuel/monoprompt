@@ -1,0 +1,17 @@
+# readme.md
+
+## config
+
+model: llama3:8b-instruct-q4_0
+context:
+  - ./
+  - ./schema.pgsql
+  - ./query.pgsql
+depends:
+  - ./schema.pgsql.monoprompt
+  - ./query.pgsql.monoprompt
+output: overwrite
+
+## prompt
+
+Please generate a markdown README for the provided file structure.
