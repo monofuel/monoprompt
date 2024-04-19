@@ -6,6 +6,29 @@
 - A monoprompt contains the name of the file(s) to output, the LLM model to use, supporting context files, and the prompt.
 - monoprompts might output code, documentation, or any other text file.
 
+- Sample prompt:
+```md
+# fibonacci.nim
+
+## config
+
+model: gpt-3.5-turbo
+
+## prompt
+
+Please generate a Nim file with a single nim function to calculate fibonacci numbers recursively.
+
+```
+proc fib*(n: int): int =
+```
+
+At the end of the file, include a `when isMainModule:` block with tests for how to run the function.
+```
+
+- You can create a monoprompt by running `./monoprompt --create example.txt`
+  - this command will create `example.txt.monoprompt` in the current directory.
+- You can run a monoprompt by running `./monoprompt example.txt.monoprompt`
+
 - example use cases:
 
   - generate docs for a codebase
@@ -20,10 +43,6 @@
   - generate your own libraries using nothing but an RFC or API.
 
 ## Specification
-
-- You can create a monoprompt by running `./monoprompt --create example.txt`
-  - this command will create `example.txt.monoprompt` in the current directory.
-- You can run a monoprompt by running `./monoprompt example.txt.monoprompt`
 
 - start the file with a header of the output filename.
 - a monoprompt file can contain multiple headers, to generate multiple files.
