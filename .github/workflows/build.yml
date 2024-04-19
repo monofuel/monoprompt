@@ -16,3 +16,10 @@ jobs:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
     - run: nimble test -y
     - run: nimble test --gc:orc -y
+    - name: Compile Nim code
+      run: nim c -d:release src/monoprompt.nim
+    - name: Upload binary
+      uses: actions/upload-artifact@v2
+      with:
+        name: monoprompt-binary
+        path: ./monoprompt
