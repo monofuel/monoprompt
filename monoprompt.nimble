@@ -1,4 +1,4 @@
-version     = "1.0.10"
+version     = "1.0.11"
 author      = "Andrew Brower"
 description = "monoprompt project"
 license     = "MIT"
