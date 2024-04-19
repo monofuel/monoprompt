@@ -23,7 +23,7 @@ At the end of the file, include a `when isMainModule:` block with tests for how 
 
 
 - OPENAI_API_KEY must be set, to use the OpenAI API.
-  - currently only openAI and Ollama are supported.
+  - currently only openAI and Ollama (llama3 works great!) are supported.
 - You can create a monoprompt by running `./monoprompt --create example.txt`
   - this command will create `example.txt.monoprompt` in the current directory.
 - You can run a monoprompt by running `./monoprompt example.txt.monoprompt`
