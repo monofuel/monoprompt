@@ -6,18 +6,24 @@ var
 
 const ExamplePromptfile = staticRead("../tests/monoprompts/life.monoprompt")
 
+# TODO test every output mode
 type MonopromptOutput* = enum
+  ## What strategy to use when writing the output file
+  undef, # default 1st enum for undefined types
   overwrite,
   augment,
-  append
+  append,
+  noop
 
 type MonopromptConfig* = ref object
+  ## Configuration for a monoprompt file
   model*: string
   context* {.defaultVal: @[].}: seq[string]
   depends* {.defaultVal: @[].}: seq[string]
   output*{.defaultVal: overwrite.}: MonopromptOutput
 
 type Monoprompt* = ref object
+  ## structure for a monoprompt file
   promptFilename*: string
   promptDir*: string
   filename*: string
@@ -26,7 +32,6 @@ type Monoprompt* = ref object
 
 
 proc printHelp() =
-
   echo "Usage: monoprompt <promptfile>"
   echo ""
   echo "--check \t\tvalidate loading in the monoprompt files"
@@ -38,9 +43,10 @@ proc printHelp() =
 proc printVersion() =
   echo "Monoprompt version 1.0.3"
 
-proc parseMonoprompt*(filename: string): seq[Monoprompt] =
-  let promptContent = readFile(filename)
-  let lines = promptContent.splitLines
+proc parseMonoprompt*(filename,content: string): seq[Monoprompt] =
+  ## Parse the contents of a monoprompt file
+  ## file is passed as args, no fs reads or writes are done.
+  let lines = content.splitLines
   let (head, tail) = splitPath(filename)
   echo "DEBUG: head ", head
   echo "DEBUG: tail ", tail
@@ -92,8 +98,15 @@ proc parseMonoprompt*(filename: string): seq[Monoprompt] =
   if result.len == 0:
     echo "No monoprompt prompts found"
 
+proc readMonoprompt*(filename: string): seq[Monoprompt] =
+  ## Read a monoprompt file and parse it
+  let content = readFile(filename)
+  return parseMonoprompt(filename, content)
+
 
 proc execute*(mp: Monoprompt) =
+  ## Execute a monoprompt file
+  ## iterates over all the outputs in the monoprompt and executes them with the AI
   echo &"Processing {mp.filename}"
 
   echo &"Processing output {mp.filename}"
@@ -121,8 +134,8 @@ You will be given context, and a prompt.
     system.strip,
     mp.prompt.strip
   )
-  # LLMs sometimes really like using codeblocks, let's just strip them out
 
+  # LLMs sometimes really like using codeblocks, let's just strip them out
   var lines = fileOutput.split("\n")
   # Remove the first line if it starts with ```
   if lines.len > 0 and lines[0].startsWith("```"):
@@ -137,6 +150,8 @@ You will be given context, and a prompt.
   writeFile(outputFilepath, fileOutput)
 
 proc main() =
+  ## CLI main function
+  ## parses command line arguments and executes the monoprompt files
   var args = commandLineParams()
 
   if args.len == 0 or args[0] == "--help" or args[0] == "-h":
@@ -173,7 +188,7 @@ proc main() =
   # TODO handle wildcards
 
   echo &"Parsing {filepath}"
-  let monoprompts = parseMonoprompt(filepath)
+  let monoprompts = readMonoprompt(filepath)
   echo "DEBUG: monoprompts.len ", monoprompts.len
   echo "DEBUG: monoprompts ", toJson(monoprompts)
 
