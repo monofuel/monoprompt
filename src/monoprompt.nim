@@ -62,7 +62,10 @@ proc parseMonoprompt*(filename,content: string): seq[Monoprompt] =
     config = ""
 
   for line in lines:
-    if line.startsWith("# "):
+    if line.startsWith("!#"):
+      echo &"DEBUG: Skipping shebang {line}"
+      continue
+    elif line.startsWith("# "):
       let filename = line[2..^1] # Remove '# ' prefix
       if currentFile.filename != "":
         if config != "":
