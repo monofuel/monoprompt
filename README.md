@@ -1,12 +1,10 @@
 # [monoprompt](https://monofuel.github.io/monoprompt/)
 
-A LLM project that aims to allow for fine-grain control of using LLMs to generate individual files.
+monoprompt is a tool designed to provide fine-grained control over the generation of text files using Large Language Models (LLMs).
 
-Inspired by Dockerfiles, monoprompts are a way to orchestrate LLMs to generate text files.
-A monoprompt contains the name of the file(s) to output, the LLM model to use, supporting context files, and the prompt.
-- monoprompts might output code, documentation, or any other text file.
+Inspired by the functional structure of Dockerfiles, monoprompts allow developers to specify the desired output file(s), select an LLM model, and define the supporting context files and prompts. This setup facilitates the creation of a variety of text outputs, including code, documentation, and other text-based assets, by leveraging LLM capabilities in a structured and repeatable manner.
 
-- Sample prompt:
+Sample prompt:
 ```md
 # fibonacci.nim
 
