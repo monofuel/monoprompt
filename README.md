@@ -53,7 +53,8 @@ example use cases:
 - configuration
   - context: a list of files to use as context for the LLM
     - If you provide a directory, a directory listing will be used as context.
-    - wildcards are not implemented yet
+    - you can use `./...` to recursively list the directory
+    - wildcards are not implemented yet (TODO)
   - model: the LLM model to use
   - depends: list of promptfiles that this prompt depends on
   - output: "overwrite", "augment" or "append"
