@@ -1,7 +1,4 @@
-# monoprompt
-
-- [Pages](https://monofuel.github.io/monoprompt/)
-
+# [monoprompt](https://monofuel.github.io/monoprompt/)
 
 - A LLM project that aims to allow for fine-grain control of using LLMs to generate individual files.
 
