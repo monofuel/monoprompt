@@ -1,5 +1,8 @@
 # monoprompt
 
+- [Pages](https://monofuel.github.io/monoprompt/)
+
+
 - A LLM project that aims to allow for fine-grain control of using LLMs to generate individual files.
 
 - Inspired by Dockerfiles, monoprompts are a way to orchestrate LLMs to generate text files.
