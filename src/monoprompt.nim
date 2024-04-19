@@ -11,7 +11,6 @@ const
 
 const ExamplePromptfile = staticRead("../tests/monoprompts/life.monoprompt")
 
-# TODO test every output mode
 type MonopromptOutput* = enum
   ## What strategy to use when writing the output file
   undef, # default 1st enum for undefined types
@@ -146,16 +145,24 @@ proc execute*(mp: Monoprompt) =
 
 
 
+  if c.output == noop:
+    echo &"DEBUG: Noop mode, skipping {mp.filename}"
+    return
+
+  if c.output == undef:
+    # likely some sort of invalid enum when loading
+    raise newException(Exception, &"Output mode not defined for {mp.filename}")
+
   echo &"Processing output {mp.filename}"
-  if c.output != overwrite:
-    # TODO implement other output modes
-    raise newException(Exception, "Output mode not yet implemented")
 
   var system = &"""
 You are A helpful AI Assitant with a duty to generate files.
 Please respond only with the contents of the file.
 You will be given context, and a prompt.
 """
+  if c.output == augment:
+    system &= "You will be augmenting a file that already exists. It will be provided as <ExistingFile/>."
+
   for contextFile in c.context:
 
     if contextFile.endsWith"/...":
@@ -201,25 +208,61 @@ You will be given context, and a prompt.
 
   if check:
     return
-  var fileOutput = generateCompletion(
-    c.model,
-    system.strip,
-    mp.prompt.strip
-  )
 
-  # LLMs sometimes really like using codeblocks, let's just strip them out
-  var lines = fileOutput.split("\n")
-  # Remove the first line if it starts with ```
-  if lines.len > 0 and lines[0].startsWith("```"):
-    lines = lines[1..^1]
-  # Remove the last line if it is ```
-  if lines.len > 0 and lines[^1] == "```":
-    lines = lines[0..^2]
-  fileOutput = lines.join("\n")
 
   let outputFilepath = mp.promptDir / mp.filename
-  echo &"Writing to {outputFilepath}"
-  writeFile(outputFilepath, fileOutput)
+  if c.output == augment:
+    if not fileExists(outputFilepath):
+      raise newException(Exception, &"Augment mode requires an existing file {outputFilepath}")
+
+    let existingFile = readFile(outputFilepath)
+    system.add(&"<ExistingFile>\n{existingFile}\n</ExistingFile>\n")
+
+  case c.output:
+  of overwrite,augment:
+    var fileOutput = generateCompletion(
+      c.model,
+      system.strip,
+      mp.prompt.strip
+    )
+
+    # LLMs sometimes really like using codeblocks, let's just strip them out
+    var lines = fileOutput.split("\n")
+    # Remove the first line if it starts with ```
+    if lines.len > 0 and lines[0].startsWith("```"):
+      lines = lines[1..^1]
+    # Remove the last line if it is ```
+    if lines.len > 0 and lines[^1] == "```":
+      lines = lines[0..^2]
+    fileOutput = lines.join("\n")
+
+    echo &"{c.output} to {outputFilepath}"
+    writeFile(outputFilepath, fileOutput)
+  of append:
+    var fileOutput = generateCompletion(
+      c.model,
+      system.strip,
+      mp.prompt.strip
+    )
+
+    # LLMs sometimes really like using codeblocks, let's just strip them out
+    var lines = fileOutput.split("\n")
+    # Remove the first line if it starts with ```
+    if lines.len > 0 and lines[0].startsWith("```"):
+      lines = lines[1..^1]
+    # Remove the last line if it is ```
+    if lines.len > 0 and lines[^1] == "```":
+      lines = lines[0..^2]
+    fileOutput = lines.join("\n")
+
+    echo &"appending to {outputFilepath}"
+    let file = open(outputFilepath, fmAppend)
+    file.write(fileOutput)
+    file.write("\n")
+    file.close()
+    
+  else:
+    raise newException(Exception, &"Output mode not implemented {c.output}")
 
 proc main() =
   ## CLI main function.

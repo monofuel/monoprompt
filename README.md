@@ -61,6 +61,7 @@ example use cases:
     - overwrite: overwrite the file
     - augment: include the existing file as context and re-write the file with augmentations
     - append: add to the file, but only if the file doesn't already exist
+    - noop: do nothing. this may be useful if you manually edited the output, but don't want to overwrite and don't want to mess with prompt dependencies.
 
 ```md
 # example.nim

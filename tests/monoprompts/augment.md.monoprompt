@@ -1,0 +1,13 @@
+# augment.md
+
+## config
+
+model: gpt-3.5-turbo
+context: []
+depends: []
+output: augment
+
+## prompt
+
+Please augment the file with the next fibonacci number.
+Preserve existing formatting with each number on a new line.

@@ -1,0 +1,12 @@
+# append.md
+
+## config
+
+model: gpt-3.5-turbo
+context: []
+depends: []
+output: append
+
+## prompt
+
+Please give a markdown list of 3 random numbers.
