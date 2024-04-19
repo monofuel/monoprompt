@@ -44,7 +44,7 @@ proc printVersion() =
   echo "Monoprompt version 1.0.3"
 
 proc parseMonoprompt*(filename,content: string): seq[Monoprompt] =
-  ## Parse the contents of a monoprompt file
+  ## Parse the contents of a monoprompt file.
   ## file is passed as args, no fs reads or writes are done.
   let lines = content.splitLines
   let (head, tail) = splitPath(filename)
@@ -105,8 +105,9 @@ proc readMonoprompt*(filename: string): seq[Monoprompt] =
 
 
 proc execute*(mp: Monoprompt) =
-  ## Execute a monoprompt file
-  ## iterates over all the outputs in the monoprompt and executes them with the AI
+  ## Execute a parsed monoprompt.
+  ## iterates over all the outputs in the monoprompt and
+  ## executes them with the specified LLM in the config.
   echo &"Processing {mp.filename}"
 
   echo &"Processing output {mp.filename}"
@@ -150,7 +151,7 @@ You will be given context, and a prompt.
   writeFile(outputFilepath, fileOutput)
 
 proc main() =
-  ## CLI main function
+  ## CLI main function.
   ## parses command line arguments and executes the monoprompt files
   var args = commandLineParams()
 
