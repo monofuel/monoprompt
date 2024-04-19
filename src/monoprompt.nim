@@ -3,6 +3,7 @@ import std/[os, strutils, strformat, json],
 
 var
   check = false
+  execDepends = false
 
 const ExamplePromptfile = staticRead("../tests/monoprompts/life.monoprompt")
 
@@ -36,6 +37,7 @@ proc printHelp() =
   echo ""
   echo "--check \t\tvalidate loading in the monoprompt files"
   echo "--create <output-filename> \t\tcreate a new monoprompt file with a basic template"
+  echo "--exec-depends <promptfile> \t\texecute dependencies of the monoprompt files"
   echo ""
   echo "  --version  \t\tprint version"
   echo "  --help     \t\tprint this help"
@@ -111,8 +113,27 @@ proc execute*(mp: Monoprompt) =
   ## executes them with the specified LLM in the config.
   echo &"Processing {mp.filename}"
 
-  #if c.depends.len > 0:
-  #  raise newException(Exception, "Depends not yet implemented")
+  if c.depends.len > 0:
+    # iterate through dependencies and see if they have been executed yet
+    for dep in c.depends:
+      let depFilepath = mp.promptDir / dep
+      let depInfo = getFileInfo(depFilepath)
+      if depInfo.kind != pcFile:
+        raise newException(Exception, &"Dependency {dep} not found")
+      let depMonoprompts = readMonoprompt(depFilepath)
+      echo &"DEBUG: Found {depMonoprompts.len} dependencies for {mp.filename}"
+      for depMp in depMonoprompts:
+        # test if the outputs exist
+        let depOutputFilepath = mp.promptDir / depMp.filename
+        let exists = fileExists(depOutputFilepath)
+        if not exists:
+          # TODO should assert the output is a file
+          if execDepends:
+            echo &"DEBUG: Executing dependency {depMp.filename}"
+            execute(depMp)
+          else:
+            raise newException(Exception, &"Dependency output {depMp.filename} not built. use `--exec-depends` if you want to build dependencies")
+
 
 
   echo &"Processing output {mp.filename}"
@@ -183,8 +204,15 @@ proc main() =
     return
 
   if args[0] == "--check" or args[0] == "-c":
+    echo &"DEBUG: check"
     check = true
     args = args[1..^1]
+
+  if args[0] == "--exec-depends":
+    echo &"DEBUG: execDepends"
+    execDepends = true
+    args = args[1..^1]
+
   if args[0] == "--create":
     if args.len < 2:
       echo "Error: --create requires a filename"
@@ -207,6 +235,7 @@ proc main() =
 
   # TODO handle multiple files
   # TODO handle wildcards
+  # TODO should re-order the files based on dependencies
 
   echo &"Parsing {filepath}"
   let monoprompts = readMonoprompt(filepath)
