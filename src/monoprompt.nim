@@ -35,7 +35,7 @@ proc printHelp() =
   echo "Usage: monoprompt <promptfile>"
   echo ""
   echo "--check \t\tvalidate loading in the monoprompt files"
-  echo "--create <filename> \t\tcreate a new monoprompt file with a basic template"
+  echo "--create <output-filename> \t\tcreate a new monoprompt file with a basic template"
   echo ""
   echo "  --version  \t\tprint version"
   echo "  --help     \t\tprint this help"
@@ -105,13 +105,19 @@ proc readMonoprompt*(filename: string): seq[Monoprompt] =
 
 
 proc execute*(mp: Monoprompt) =
+  let c = mp.config
   ## Execute a parsed monoprompt.
   ## iterates over all the outputs in the monoprompt and
   ## executes them with the specified LLM in the config.
   echo &"Processing {mp.filename}"
 
+  if c.depends.len > 0:
+    raise newException(Exception, "Depends not yet implemented")
+
+
   echo &"Processing output {mp.filename}"
-  if mp.config.output != overwrite:
+  if c.output != overwrite:
+    # TODO implement other output modes
     raise newException(Exception, "Output mode not yet implemented")
 
   var system = &"""
@@ -119,19 +125,18 @@ You are A helpful AI Assitant with a duty to generate files.
 Please respond only with the contents of the file.
 You will be given context, and a prompt.
 """
-  for contextFile in mp.config.context:
+  for contextFile in c.context:
     let contextFilepath = mp.promptDir / contextFile
     echo &"DEBUG: Reading context from {contextFilepath}"
     let c = readFile(contextFilepath)
     system.add(&"<Context>\n{c}\n</Context>\n")
 
   # TODO handle dynamic context plugins
-  # TODO handle depends
 
   if check:
     return
   var fileOutput = generateCompletion(
-    mp.config.model,
+    c.model,
     system.strip,
     mp.prompt.strip
   )
@@ -170,12 +175,12 @@ proc main() =
       echo "Error: --create requires a filename"
       return
     var filename = args[1]
-    if not filename.endsWith(".monoprompt"):
-      filename = filename & ".monoprompt"
+    if filename.endsWith(".monoprompt"):
+      filename = filename[0..^11]
     var sampleOutput = ExamplePromptfile
     sampleOutput = sampleOutput.replace("life.txt", filename)
 
-    writeFile(filename, sampleOutput)
+    writeFile(filename & ".monoprompt", sampleOutput)
     return
 
   ai.setup()

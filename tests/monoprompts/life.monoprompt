@@ -3,6 +3,9 @@
 ## config
 
 model: gpt-3.5-turbo
+context: []
+depends: []
+output: overwrite
 
 ## prompt
 

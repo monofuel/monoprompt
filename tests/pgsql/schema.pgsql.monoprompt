@@ -1,0 +1,27 @@
+# schema.pgsql
+
+## config
+
+model: gpt-3.5-turbo
+context:
+  - ./example-types.nim
+depends: []
+output: overwrite
+
+## prompt
+
+Please generate a Postgres schema for these structures.
+use `CREATE TABLE IF NOT EXISTS` for each table.
+
+for character assets, please include a character_id int64 column.
+for corporate assets, please include a corporation_id int64 column.
+
+Please include indexes for character_id and corporation_id columns.
+Use `CREATE INDEX IF NOT EXISTS` for each index.
+
+Please use a generated UUID for the primary key.
+Add sql comments explaining each table.
+Add sql comments explaining any tricky column types.
+Require that every field is NOT NULL.
+
+Please also include any other indexes you think would be useful.
