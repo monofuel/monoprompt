@@ -113,10 +113,10 @@ proc readMonoprompt*(filename: string): seq[Monoprompt] =
 
 
 proc execute*(mp: Monoprompt) =
-  let c = mp.config
   ## Execute a parsed monoprompt.
   ## iterates over all the outputs in the monoprompt and
   ## executes them with the specified LLM in the config.
+  let c = mp.config
   echo &"DEBUG: Processing {mp.filename}"
 
   if c.depends.len > 0:
