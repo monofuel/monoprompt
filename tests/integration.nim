@@ -11,7 +11,7 @@ suite "monoprompt":
   test "life":
     if fileExists(testFolder / "life.txt"):
       removeFile(testFolder / "life.txt")
-    let m = parseMonoprompt(testFolder / "life.monoprompt")
+    let m = readMonoprompt(testFolder / "life.monoprompt")
     assert m.len() == 1, "Expected 1 monoprompt"
     for mp in m:
       mp.execute()
@@ -21,7 +21,7 @@ suite "monoprompt":
     let output = testFolder / "fibonacci.nim"
     if fileExists(output):
       removeFile(output)
-    let m = parseMonoprompt(testFolder / "fibonacci.monoprompt")
+    let m = readMonoprompt(testFolder / "fibonacci.monoprompt")
     assert m.len() == 1, "Expected 1 monoprompt"
     for mp in m:
       mp.execute()
@@ -34,7 +34,7 @@ suite "monoprompt":
     let output = testFolder / "call_fibonacci.nim"
     if fileExists(output):
       removeFile(output)
-    let m = parseMonoprompt(testFolder / "call_fibonacci.monoprompt")
+    let m = readMonoprompt(testFolder / "call_fibonacci.monoprompt")
     assert m.len() == 1, "Expected 1 monoprompt"
     assert m[0].config.context.len == 1, "Expected 1 context"
     for mp in m:
