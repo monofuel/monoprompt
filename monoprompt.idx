@@ -8,5 +8,5 @@ nim	MonopromptOutput	monoprompt.html#MonopromptOutput	enum MonopromptOutput		15
 nim	MonopromptConfig	monoprompt.html#MonopromptConfig	type MonopromptConfig		23
 nim	Monoprompt	monoprompt.html#Monoprompt	type Monoprompt		30
 nim	parseMonoprompt	monoprompt.html#parseMonoprompt,string,string	proc parseMonoprompt(filename, content: string): seq[Monoprompt]		52
-nim	readMonoprompt	monoprompt.html#readMonoprompt,string	proc readMonoprompt(filename: string): seq[Monoprompt]		107
-nim	execute	monoprompt.html#execute,Monoprompt	proc execute(mp: Monoprompt)		113
+nim	readMonoprompt	monoprompt.html#readMonoprompt,string	proc readMonoprompt(filename: string): seq[Monoprompt]		110
+nim	execute	monoprompt.html#execute,Monoprompt	proc execute(mp: Monoprompt)		116
