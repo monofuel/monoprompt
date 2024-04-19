@@ -1,5 +1,11 @@
 name: Github Actions
-on: [push, pull_request]
+on:
+  push:
+    tags:
+      - '*'
+    branches:
+      - master
+  pull_request:
 jobs:
   build:
     strategy:
