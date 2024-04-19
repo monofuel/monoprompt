@@ -1,9 +1,9 @@
 # [monoprompt](https://monofuel.github.io/monoprompt/)
 
-- A LLM project that aims to allow for fine-grain control of using LLMs to generate individual files.
+A LLM project that aims to allow for fine-grain control of using LLMs to generate individual files.
 
-- Inspired by Dockerfiles, monoprompts are a way to orchestrate LLMs to generate text files.
-- A monoprompt contains the name of the file(s) to output, the LLM model to use, supporting context files, and the prompt.
+Inspired by Dockerfiles, monoprompts are a way to orchestrate LLMs to generate text files.
+A monoprompt contains the name of the file(s) to output, the LLM model to use, supporting context files, and the prompt.
 - monoprompts might output code, documentation, or any other text file.
 
 - Sample prompt:
@@ -29,21 +29,18 @@ At the end of the file, include a `when isMainModule:` block with tests for how 
   - this command will create `example.txt.monoprompt` in the current directory.
 - You can run a monoprompt by running `./monoprompt example.txt.monoprompt`
 
-- example use cases:
+example use cases:
 
-  - generate docs for a codebase
-  - generate tests for an existing codebase
-  - generate a summary of files in a folder
-  - generate a workout plan based on previous workout notes
+- building new code files while referencing existing code files for imports, architecture, and code style
+- generate docs for a codebase by referencing code files
+- generate tests for an existing codebase by referencing the code they need to test
+- generate a summary of files in a folder
+- generate a workout plan based on previous workout notes
 
-- long term goals:
-  - It could be exciting if you could generate entire projects from a single monoprompt.
-  - monoprompts to generate other monoprompts
-  - entire codebases could be generated in different languages with a single line change of what language to use.
-  - generate your own libraries using nothing but an RFC or API.
 
 ## Specification
 
+- monoprompts are a markdown file with a `.monoprompt` extension.
 - start the file with a header of the output filename.
 - a monoprompt file can contain multiple headers, to generate multiple files.
 - each file may have an optional `## Config` section, which will contain a YAML config object (ew)
@@ -62,7 +59,7 @@ At the end of the file, include a `when isMainModule:` block with tests for how 
     - augment: include the existing file as context and re-write the file with augmentations
     - append: add to the file, but only if the file doesn't already exist
 
-```monoprompt
+```md
 # example.nim
 
 ## Config
