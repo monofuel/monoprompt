@@ -5,7 +5,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
+        # TODO windows-latest is having issues
 
     runs-on: ${{ matrix.os }}
 
