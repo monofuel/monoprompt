@@ -41,7 +41,7 @@ proc printHelp() =
   echo "  --help     \t\tprint this help"
 
 proc printVersion() =
-  echo "Monoprompt version 1.0.4"
+  echo "Monoprompt version 1.0.6"
 
 proc parseMonoprompt*(filename,content: string): seq[Monoprompt] =
   ## Parse the contents of a monoprompt file.
