@@ -3,6 +3,9 @@
 !*/
 !*.*
 
+# don't ignore ignores
+!.gitignore
+
 # normal ignores:
 *.exe
 nimcache

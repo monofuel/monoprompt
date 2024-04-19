@@ -157,15 +157,15 @@ You will be given context, and a prompt.
 
     if contextFile.endsWith"/...":
       echo &"DEBUG: Reading all files in directory {mp.promptDir}"
-      var files: seq[string]
       # list all files recursively
       var recurseFilepath = contextFile
       recurseFilepath.removeSuffix("/...")
       recurseFilepath = mp.promptDir / recurseFilepath
 
       let files = recurseList(recurseFilepath)
-
-
+      let filesStr = files.join("\n")
+      echo &"DEBUG: Found {files.len} files, recurive listing {recurseFilepath}"
+      system.add(&"<ContextDir>\n{filesStr}\n</ContextDir>\n")
 
       continue
 

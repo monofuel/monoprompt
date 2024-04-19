@@ -12,18 +12,17 @@ output: overwrite
 Please generate a nim file with the following function:
 
 ```
-import std/[os,strformat]
+import std/[os,strformat, strutils]
 
 proc recurseList*(filePath: string): seq[string] =
   ## Recursively list all files in a directory.
   ## returns a list of relative file paths
-  echo &"DEBUG: {filepath}"
-  for kind, path in walkDir(filePath):
-    if {pcFile, pcLinkToFile}.contains(kind):
-      result.add(path)
-    elif {pcDir, pcLinkToDir}.contains(kind):
-      result.add(recurseList(path))
+  ## skip hidden files
+  echo &"DEBUG: recurse listing {filepath}"
+
 ```
 
 nim has an implicit `result` variable for all functions you can use that is automatically returned.
 Please skip hidden files that start with a `.`
+
+include a `when isMainModule:` block that can test the function in the current directory.

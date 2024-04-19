@@ -1,0 +1,13 @@
+# recurse.md
+
+## config
+
+model: gpt-3.5-turbo
+context:
+  - ./...
+depends: []
+output: overwrite
+
+## prompt
+
+Please create a markdown file explaining the provided context as a markdown list.
