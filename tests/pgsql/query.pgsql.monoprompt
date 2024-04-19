@@ -1,0 +1,16 @@
+# query.pgsql
+
+## config
+
+model: gpt-3.5-turbo
+context:
+  - ./schema.pgsql
+depends:
+  - ./schema.pgsql.monoprompt
+output: overwrite
+
+## prompt
+
+Please generate A query to fetch all assets in a region for both characters and corporations.
+
+Please use `?` for any values that need to be filled in.

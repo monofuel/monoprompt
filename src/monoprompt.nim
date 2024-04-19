@@ -111,8 +111,8 @@ proc execute*(mp: Monoprompt) =
   ## executes them with the specified LLM in the config.
   echo &"Processing {mp.filename}"
 
-  if c.depends.len > 0:
-    raise newException(Exception, "Depends not yet implemented")
+  #if c.depends.len > 0:
+  #  raise newException(Exception, "Depends not yet implemented")
 
 
   echo &"Processing output {mp.filename}"
@@ -127,9 +127,24 @@ You will be given context, and a prompt.
 """
   for contextFile in c.context:
     let contextFilepath = mp.promptDir / contextFile
-    echo &"DEBUG: Reading context from {contextFilepath}"
-    let c = readFile(contextFilepath)
-    system.add(&"<Context>\n{c}\n</Context>\n")
+
+    # check if it is a file or directory
+    let ctxInfo = getFileInfo(contextFilepath)
+    case ctxInfo.kind:
+    of pcFile, pcLinkToFile:
+      echo &"DEBUG: Reading context from {contextFilepath}"
+      let c = readFile(contextFilepath)
+      system.add(&"<Context>\n{c}\n</Context>\n")
+    of pcDir, pcLinkToDir:
+      echo &"DEBUG: Reading directory listing {contextFilepath}"
+      var files: seq[string]
+      for (_, filename) in walkDir(contextFilepath):
+        let info = getFileInfo(filename)
+        if info.kind == pcFile:
+          files.add(filename)
+      let filesStr = files.join("\n")
+      system.add(&"<ContextDir>\n{filesStr}\n</ContextDir>\n")
+    
 
   # TODO handle dynamic context plugins
 
@@ -176,7 +191,7 @@ proc main() =
       return
     var filename = args[1]
     if filename.endsWith(".monoprompt"):
-      filename = filename[0..^11]
+      filename = filename[0..^12]
     var sampleOutput = ExamplePromptfile
     sampleOutput = sampleOutput.replace("life.txt", filename)
 

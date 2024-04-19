@@ -51,7 +51,8 @@ example use cases:
 
 - configuration
   - context: a list of files to use as context for the LLM
-    - stretch goal: support URLs
+    - If you provide a directory, a directory listing will be used as context.
+    - if you want to provide several files, use a wildcard instead like `./*.nim`
   - model: the LLM model to use
   - depends: list of promptfiles that this prompt depends on
   - output: "overwrite", "augment" or "append"
@@ -67,6 +68,7 @@ context:
   - ./readme.md
   - ./programming-patterns.md
   - ./otherfile.nim
+  - ./
 model: gpt-3.5-turbo
 
 ## prompt
