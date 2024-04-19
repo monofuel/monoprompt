@@ -66,7 +66,7 @@
   depends* {.defaultVal: @[].}: seq[string]
   output* {.defaultVal: overwrite.}: MonopromptOutput">MonopromptConfig</a></li>
 <li><a class="reference" href="#MonopromptOutput" title="MonopromptOutput = enum
-  overwrite, augment, append">MonopromptOutput</a></li>
+  undef, overwrite, augment, append, noop">MonopromptOutput</a></li>
 
     </ul>
   </details>
@@ -80,7 +80,11 @@
 
 </ul>
 <ul class="simple nested-toc-section">parseMonoprompt
-  <li><a class="reference" href="#parseMonoprompt%2Cstring" title="parseMonoprompt(filename: string): seq[Monoprompt]">parseMonoprompt(filename: string): seq[Monoprompt]</a></li>
+  <li><a class="reference" href="#parseMonoprompt%2Cstring%2Cstring" title="parseMonoprompt(filename, content: string): seq[Monoprompt]">parseMonoprompt(filename, content: string): seq[Monoprompt]</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">readMonoprompt
+  <li><a class="reference" href="#readMonoprompt%2Cstring" title="readMonoprompt(filename: string): seq[Monoprompt]">readMonoprompt(filename: string): seq[Monoprompt]</a></li>
 
 </ul>
 
@@ -117,9 +121,9 @@
 </pre></dt>
   <dd>
     
-    
-    <a href="https://github.com/monofuel/monoprompt/tree/master/src/monoprompt.nim#L20" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/monofuel/monoprompt/edit/devel/src/monoprompt.nim#L20" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    structure for a monoprompt file
+    <a href="https://github.com/monofuel/monoprompt/tree/master/src/monoprompt.nim#L25" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/monofuel/monoprompt/edit/devel/src/monoprompt.nim#L25" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -132,20 +136,20 @@
 </pre></dt>
   <dd>
     
-    
-    <a href="https://github.com/monofuel/monoprompt/tree/master/src/monoprompt.nim#L14" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/monofuel/monoprompt/edit/devel/src/monoprompt.nim#L14" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    Configuration for a monoprompt file
+    <a href="https://github.com/monofuel/monoprompt/tree/master/src/monoprompt.nim#L18" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/monofuel/monoprompt/edit/devel/src/monoprompt.nim#L18" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
 <div id="MonopromptOutput">
   <dt><pre><a href="monoprompt.html#MonopromptOutput"><span class="Identifier">MonopromptOutput</span></a> <span class="Other">=</span> <span class="Keyword">enum</span>
-  <span class="Identifier">overwrite</span><span class="Other">,</span> <span class="Identifier">augment</span><span class="Other">,</span> <span class="Identifier">append</span></pre></dt>
+  <span class="Identifier">undef</span><span class="Other">,</span> <span class="Identifier">overwrite</span><span class="Other">,</span> <span class="Identifier">augment</span><span class="Other">,</span> <span class="Identifier">append</span><span class="Other">,</span> <span class="Identifier">noop</span></pre></dt>
   <dd>
     
-    
-    <a href="https://github.com/monofuel/monoprompt/tree/master/src/monoprompt.nim#L9" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/monofuel/monoprompt/edit/devel/src/monoprompt.nim#L9" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    What strategy to use when writing the output file
+    <a href="https://github.com/monofuel/monoprompt/tree/master/src/monoprompt.nim#L10" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/monofuel/monoprompt/edit/devel/src/monoprompt.nim#L10" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -163,24 +167,39 @@
                                <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
-    
-    <a href="https://github.com/monofuel/monoprompt/tree/master/src/monoprompt.nim#L96" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/monofuel/monoprompt/edit/devel/src/monoprompt.nim#L96" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    Execute a monoprompt file iterates over all the outputs in the monoprompt and executes them with the AI
+    <a href="https://github.com/monofuel/monoprompt/tree/master/src/monoprompt.nim#L107" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/monofuel/monoprompt/edit/devel/src/monoprompt.nim#L107" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
 
 </div>
 <div id="parseMonoprompt-procs-all">
-  <div id="parseMonoprompt,string">
-  <dt><pre><span class="Keyword">proc</span> <a href="#parseMonoprompt%2Cstring"><span class="Identifier">parseMonoprompt</span></a><span class="Other">(</span><span class="Identifier">filename</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="monoprompt.html#Monoprompt"><span class="Identifier">Monoprompt</span></a><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">,</span>
+  <div id="parseMonoprompt,string,string">
+  <dt><pre><span class="Keyword">proc</span> <a href="#parseMonoprompt%2Cstring%2Cstring"><span class="Identifier">parseMonoprompt</span></a><span class="Other">(</span><span class="Identifier">filename</span><span class="Other">,</span> <span class="Identifier">content</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="monoprompt.html#Monoprompt"><span class="Identifier">Monoprompt</span></a><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span>
+    <span class="Identifier">YamlConstructionError</span><span class="Other">,</span> <span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">,</span> <span class="Identifier">YamlParserError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">,</span>
+    <span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ReadIOEffect</span><span class="Other">,</span> <span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Parse the contents of a monoprompt file file is passed as args, no fs reads or writes are done.
+    <a href="https://github.com/monofuel/monoprompt/tree/master/src/monoprompt.nim#L46" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/monofuel/monoprompt/edit/devel/src/monoprompt.nim#L46" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+
+</div>
+<div id="readMonoprompt-procs-all">
+  <div id="readMonoprompt,string">
+  <dt><pre><span class="Keyword">proc</span> <a href="#readMonoprompt%2Cstring"><span class="Identifier">readMonoprompt</span></a><span class="Other">(</span><span class="Identifier">filename</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="monoprompt.html#Monoprompt"><span class="Identifier">Monoprompt</span></a><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">,</span>
     <span class="Identifier">YamlConstructionError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">,</span> <span class="Identifier">YamlParserError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ReadIOEffect</span><span class="Other">,</span> <span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
-    
-    <a href="https://github.com/monofuel/monoprompt/tree/master/src/monoprompt.nim#L41" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/monofuel/monoprompt/edit/devel/src/monoprompt.nim#L41" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    Read a monoprompt file and parse it
+    <a href="https://github.com/monofuel/monoprompt/tree/master/src/monoprompt.nim#L101" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/monofuel/monoprompt/edit/devel/src/monoprompt.nim#L101" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -196,7 +215,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-04-19 17:37:25 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-04-19 17:45:53 UTC</small>
       </div>
     </div>
   </div>
