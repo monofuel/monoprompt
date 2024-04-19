@@ -5,6 +5,10 @@ var
   check = false
   execDepends = false
 
+const
+  NimblePkgVersion {.strdefine.} = "dev"
+  Version = NimblePkgVersion
+
 const ExamplePromptfile = staticRead("../tests/monoprompts/life.monoprompt")
 
 # TODO test every output mode
@@ -43,7 +47,7 @@ proc printHelp() =
   echo "  --help     \t\tprint this help"
 
 proc printVersion() =
-  echo "Monoprompt version 1.0.7"
+  echo &"Monoprompt version {Version}"
 
 proc parseMonoprompt*(filename,content: string): seq[Monoprompt] =
   ## Parse the contents of a monoprompt file.

@@ -18,13 +18,14 @@ model: gpt-3.5-turbo
 
 Please generate a Nim file with a single nim function to calculate fibonacci numbers recursively.
 
-```
-proc fib*(n: int): int =
-```
+`proc fib*(n: int): int =`
 
 At the end of the file, include a `when isMainModule:` block with tests for how to run the function.
 ```
 
+
+- OPENAI_API_KEY must be set, to use the OpenAI API.
+  - currently only openAI and Ollama are supported.
 - You can create a monoprompt by running `./monoprompt --create example.txt`
   - this command will create `example.txt.monoprompt` in the current directory.
 - You can run a monoprompt by running `./monoprompt example.txt.monoprompt`
