@@ -9,7 +9,14 @@ proc setup*() =
   if openAIKey != "":
     echo &"DEBUG: OpenAI API key found, initializing OpenAI API"
     openai = newOpenAIAPI()
-  ollama = newOllamaAPI()
+
+  let ollamaBaseUrl = getEnv("OLLAMA_BASE_URL", "")
+  if ollamaBaseUrl != "":
+    echo &"DEBUG: Ollama base URL found, initializing Ollama API with URL {ollamaBaseUrl}"
+    ollama = newOllamaAPI(ollamaBaseUrl)
+  else:
+    # library defaults to "http://localhost:11434/api"
+    ollama = newOllamaAPI()
 
 proc close*() =
   if openai != nil:

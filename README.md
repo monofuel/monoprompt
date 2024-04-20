@@ -84,6 +84,7 @@ At the end of the file, include a `when isMainModule:` block with tests for how 
 ## Environment
 
 - set `OPENAI_API_KEY` to your OpenAI API key if you want to use the OpenAI API.
+- set `OLLAMA_BASE_URL` if you want to use the Ollama API on a different server. defaults to `http://localhost:11434/api`.
 
 ## Fine-Tuning
 
