@@ -1,26 +1,31 @@
 SELECT 
-  COALESCE((CASE WHEN ca.character_id IS NOT NULL THEN 'Character' ELSE 'Corporation' END), '?') AS "Type",
-  COALESCE(ca.character_id, ca.corporation_id) AS "ID",
-  ca.item_id AS "Item ID",
-  ca.location_flag AS "Location Flag",
-  ca.location_id AS "Location ID",
-  ca.location_type AS "Location Type",
-  ca.quantity AS "Quantity",
-  ca.type_id AS "Type ID"
+    ca.id,
+    ca.character_id,
+    ca.is_blueprint_copy,
+    ca.is_singleton,
+    ca.item_id,
+    ca.location_flag,
+    ca.location_id,
+    ca.location_type,
+    ca.quantity,
+    ca.type_id
 FROM 
-  character_assets ca
+    character_assets ca
+WHERE 
+    ca.location_id = ?
 UNION ALL
 SELECT 
-  'Corporation' AS "Type",
-  ca.corporation_id AS "ID",
-  ca.item_id AS "Item ID",
-  ca.location_flag AS "Location Flag",
-  ca.location_id AS "Location ID",
-  ca.location_type AS "Location Type",
-  ca.quantity AS "Quantity",
-  ca.type_id AS "Type ID"
+    ca.id,
+    ca.corporation_id,
+    ca.is_blueprint_copy,
+    ca.is_singleton,
+    ca.item_id,
+    ca.location_flag,
+    ca.location_id,
+    ca.location_type,
+    ca.quantity,
+    ca.type_id
 FROM 
-  corporate_assets ca
+    corporate_assets ca
 WHERE 
-  ca.location_flag = ? AND 
-  ca.location_id = ?;
+    ca.location_id = ?

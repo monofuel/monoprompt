@@ -227,7 +227,7 @@ You will be given context, and a prompt.
     )
 
     # LLMs sometimes really like using codeblocks, let's just strip them out
-    var lines = fileOutput.split("\n")
+    var lines = fileOutput.strip().split("\n")
     # Remove the first line if it starts with ```
     if lines.len > 0 and lines[0].startsWith("```"):
       lines = lines[1..^1]

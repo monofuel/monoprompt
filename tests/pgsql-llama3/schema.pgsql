@@ -1,59 +1,38 @@
--- Table: character_assets
 CREATE TABLE IF NOT EXISTS character_assets (
-    -- Primary key: uuid for the asset
-    id UUID PRIMARY KEY,
-    -- Foreign key: references the character that owns this asset
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     character_id INT64 NOT NULL,
-    -- Whether this is a blueprint copy or not
     is_blueprint_copy BOOLEAN NOT NULL,
-    -- Whether this is a singleton or not
     is_singleton BOOLEAN NOT NULL,
-    -- Item ID
     item_id INT64 NOT NULL,
-    -- Location flag (e.g. "station", "space")
-    location_flag VARCHAR(50) NOT NULL,
-    -- Location ID
+    location_flag VARCHAR(255) NOT NULL,
     location_id INT64 NOT NULL,
-    -- Type of location (e.g. "station", "planet")
-    location_type VARCHAR(50) NOT NULL,
-    -- Quantity of the item
-    quantity INT32 NOT NULL,
-    -- Type ID of the item
-    type_id INT32 NOT NULL,
+    location_type VARCHAR(255) NOT NULL,
+    quantity INTEGER NOT NULL,
+    type_id INTEGER NOT NULL,
+    CONSTRAINT fk_character_id FOREIGN KEY (character_id) REFERENCES characters(id)
+);
 
-    -- Index for efficient lookup by character ID
-    CREATE INDEX IF NOT EXISTS idx_character_assets_on_character_id ON character_assets (character_id);
+CREATE INDEX IF NOT EXISTS idx_character_id ON character_assets(character_id);
 
-    COMMENT ON TABLE character_assets IS 'Represents an asset owned by a character';
-    COMMENT ON COLUMN character_assets.character_id IS 'Foreign key referencing the character that owns this asset';
-) WITH (oids = false);
-
--- Table: corporate_assets
 CREATE TABLE IF NOT EXISTS corporate_assets (
-    -- Primary key: uuid for the asset
-    id UUID PRIMARY KEY,
-    -- Foreign key: references the corporation that owns this asset
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     corporation_id INT64 NOT NULL,
-    -- Whether this is a blueprint copy or not
     is_blueprint_copy BOOLEAN NOT NULL,
-    -- Whether this is a singleton or not
     is_singleton BOOLEAN NOT NULL,
-    -- Item ID
     item_id INT64 NOT NULL,
-    -- Location flag (e.g. "station", "space")
-    location_flag VARCHAR(50) NOT NULL,
-    -- Location ID
+    location_flag VARCHAR(255) NOT NULL,
     location_id INT64 NOT NULL,
-    -- Type of location (e.g. "station", "planet")
-    location_type VARCHAR(50) NOT NULL,
-    -- Quantity of the item
-    quantity INT32 NOT NULL,
-    -- Type ID of the item
-    type_id INT32 NOT NULL,
+    location_type VARCHAR(255) NOT NULL,
+    quantity INTEGER NOT NULL,
+    type_id INTEGER NOT NULL,
+    CONSTRAINT fk_corporation_id FOREIGN KEY (corporation_id) REFERENCES corporations(id)
+);
 
-    -- Index for efficient lookup by corporation ID
-    CREATE INDEX IF NOT EXISTS idx_corporate_assets_on_corporation_id ON corporate_assets (corporation_id);
+CREATE INDEX IF NOT EXISTS idx_corporation_id ON corporate_assets(corporation_id);
 
-    COMMENT ON TABLE corporate_assets IS 'Represents an asset owned by a corporation';
-    COMMENT ON COLUMN corporate_assets.corporation_id IS 'Foreign key referencing the corporation that owns this asset';
-) WITH (oids = false);
+-- SQL comment explaining the use of UUIDs
+-- Using a UUID as the primary key ensures unique IDs for each asset, making it easier to identify and manage them.
+-- The uuid_generate_v4() function generates a random UUID.
+
+-- SQL comment explaining the NOT NULL constraint
+-- Requiring that every field is NOT NULL ensures that there are no null values in the table, which can cause issues when querying or joining data.
