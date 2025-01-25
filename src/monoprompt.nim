@@ -1,5 +1,5 @@
-import std/[os, strutils, strformat, json],
-  jsony, yaml/[loading], ./ai, utils
+import std/[os, sequtils, strutils, strformat, json],
+  jsony, ./ai, utils
 
 var
   check = false
@@ -10,6 +10,7 @@ const
   Version = NimblePkgVersion
 
 const ExamplePromptfile = staticRead("../tests/monoprompts/life.monoprompt")
+
 
 type MonopromptOutput* = enum
   ## What strategy to use when writing the output file
@@ -22,9 +23,9 @@ type MonopromptOutput* = enum
 type MonopromptConfig* = ref object
   ## Configuration for a monoprompt file
   model*: string
-  context* {.defaultVal: @[].}: seq[string]
-  depends* {.defaultVal: @[].}: seq[string]
-  output*{.defaultVal: overwrite.}: MonopromptOutput
+  context*: seq[string]
+  depends*: seq[string]
+  output*: MonopromptOutput
 
 type Monoprompt* = ref object
   ## structure for a monoprompt file
@@ -48,6 +49,78 @@ proc printHelp() =
 proc printVersion() =
   echo &"Monoprompt version {Version}"
 
+proc loadConfig*(content: string): MonopromptConfig =
+  ## Parse YAML-like config content and return a new MonopromptConfig object
+  result = MonopromptConfig(
+    context: @[],
+    depends: @[],
+    output: MonopromptOutput.overwrite  # Set default output mode
+  )
+  
+  var 
+    lines = content.splitLines()
+    currentKey = ""
+    currentList: seq[string]
+    inList = false
+  
+  for line in lines:
+    let trimmed = line.strip()
+    if trimmed.len == 0 or trimmed.startsWith("#"):
+      continue
+    
+    if trimmed.startsWith("- "):  # List item
+      if not inList:
+        raise newException(Exception, "List item without a key")
+      currentList.add(trimmed[2..^1].strip())
+      continue
+      
+    # Not a list item, so if we were building a list, save it
+    if inList:
+      case currentKey
+      of "context": result.context = currentList
+      of "depends": result.depends = currentList
+      inList = false
+      currentList = @[]
+    
+    let parts = trimmed.split(":", 1)
+    if parts.len != 2:
+      continue
+      
+    let key = parts[0].strip().toLower()
+    let value = parts[1].strip()
+    currentKey = key
+    
+    if value == "":  # Start of a list
+      inList = true
+      currentList = @[]
+    else:  # Single value
+      case key
+      of "model":
+        result.model = value
+      of "context":
+        if value.startsWith("[") and value.endsWith("]"):
+          let items = value[1..^2].split(",")
+          result.context = items.mapIt(it.strip())
+        else:
+          result.context = @[value]
+      of "depends":
+        if value.startsWith("[") and value.endsWith("]"):
+          let items = value[1..^2].split(",")
+          result.depends = items.mapIt(it.strip())
+        else:
+          result.depends = @[value]
+      of "output":
+        try:
+          result.output = parseEnum[MonopromptOutput](value)
+        except ValueError:
+          raise newException(Exception, &"Invalid output mode: {value}")
+  
+  # Handle if we were still building a list at the end
+  if inList:
+    case currentKey
+    of "context": result.context = currentList
+    of "depends": result.depends = currentList
+
 proc parseMonoprompt*(filename,content: string): seq[Monoprompt] =
   ## Parse the contents of a monoprompt file.
   ## file is passed as args, no fs reads or writes are done.
@@ -60,6 +133,8 @@ proc parseMonoprompt*(filename,content: string): seq[Monoprompt] =
     currentSection = ""
     config = ""
 
+  result = @[]
+
   for line in lines:
     if line.startsWith("!#"):
       echo &"DEBUG: Skipping shebang {line}"
@@ -68,7 +143,7 @@ proc parseMonoprompt*(filename,content: string): seq[Monoprompt] =
       let filename = line[2..^1] # Remove '# ' prefix
       if currentFile.filename != "":
         if config != "":
-          load(config, currentFile.config)
+          currentFile.config = loadConfig(config)
           config = ""
         currentFile.promptFilename = filename
         currentFile.promptDir = head
@@ -94,7 +169,7 @@ proc parseMonoprompt*(filename,content: string): seq[Monoprompt] =
 
   if currentFile.filename != "":
     if config != "":
-      load(config, currentFile.config)
+      currentFile.config = loadConfig(config)
       config = ""
     currentFile.promptFilename = filename
     currentFile.promptDir = head
