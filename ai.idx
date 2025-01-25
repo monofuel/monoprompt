@@ -1,4 +1,4 @@
 nimTitle	ai	ai.html	module src/ai		0
 nim	setup	ai.html#setup	proc setup()		7
-nim	close	ai.html#close	proc close()		21
-nim	generateCompletion	ai.html#generateCompletion,string,string,string	proc generateCompletion(model: string; system: string; prompt: string): string		26
+nim	close	ai.html#close	proc close()		14
+nim	generateCompletion	ai.html#generateCompletion,string,string,string	proc generateCompletion(model: string; system: string; prompt: string): string		19

@@ -1,12 +1,13 @@
 nimTitle	monoprompt	monoprompt.html	module src/monoprompt		0
-nim	undef	monoprompt.html#undef	MonopromptOutput.undef		14
-nim	overwrite	monoprompt.html#overwrite	MonopromptOutput.overwrite		14
-nim	augment	monoprompt.html#augment	MonopromptOutput.augment		14
-nim	append	monoprompt.html#append	MonopromptOutput.append		14
-nim	noop	monoprompt.html#noop	MonopromptOutput.noop		14
-nim	MonopromptOutput	monoprompt.html#MonopromptOutput	enum MonopromptOutput		14
-nim	MonopromptConfig	monoprompt.html#MonopromptConfig	type MonopromptConfig		22
-nim	Monoprompt	monoprompt.html#Monoprompt	type Monoprompt		29
-nim	parseMonoprompt	monoprompt.html#parseMonoprompt,string,string	proc parseMonoprompt(filename, content: string): seq[Monoprompt]		51
-nim	readMonoprompt	monoprompt.html#readMonoprompt,string	proc readMonoprompt(filename: string): seq[Monoprompt]		109
-nim	execute	monoprompt.html#execute,Monoprompt	proc execute(mp: Monoprompt)		115
+nim	undef	monoprompt.html#undef	MonopromptOutput.undef		15
+nim	overwrite	monoprompt.html#overwrite	MonopromptOutput.overwrite		15
+nim	augment	monoprompt.html#augment	MonopromptOutput.augment		15
+nim	append	monoprompt.html#append	MonopromptOutput.append		15
+nim	noop	monoprompt.html#noop	MonopromptOutput.noop		15
+nim	MonopromptOutput	monoprompt.html#MonopromptOutput	enum MonopromptOutput		15
+nim	MonopromptConfig	monoprompt.html#MonopromptConfig	type MonopromptConfig		23
+nim	Monoprompt	monoprompt.html#Monoprompt	type Monoprompt		30
+nim	loadConfig	monoprompt.html#loadConfig,string	proc loadConfig(content: string): MonopromptConfig		52
+nim	parseMonoprompt	monoprompt.html#parseMonoprompt,string,string	proc parseMonoprompt(filename, content: string): seq[Monoprompt]		124
+nim	readMonoprompt	monoprompt.html#readMonoprompt,string	proc readMonoprompt(filename: string): seq[Monoprompt]		184
+nim	execute	monoprompt.html#execute,Monoprompt	proc execute(mp: Monoprompt)		190
